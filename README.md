@@ -1,175 +1,216 @@
 # Mini Port Scanner + Dashboard
 
-**Mini Port Scanner + Dashboard**
-Scanner de portas TCP com interface web em Flask, feito para portfólio.
-Escaneia portas (IPv4/IPv6), usa `ThreadPoolExecutor` para paralelizar I/O e tenta capturar banners simples. Ideal para demonstrar conhecimentos de redes, Python e integração com web.
+Scanner de portas TCP com interface web desenvolvido em Python e Flask. O projeto permite escanear portas em hosts IPv4 e IPv6, utilizando paralelismo com `ThreadPoolExecutor` para otimizar operações de rede e capturar banners de serviços quando disponíveis.
+
+> **Aviso:** Este projeto foi desenvolvido para fins educacionais e de demonstração. Utilize-o apenas em redes e sistemas onde você possua autorização para realizar testes.
 
 ---
 
-## 📌 Tópicos
-* [Aviso legal / Ética](#aviso-legal--ética)
-* [Sobre](#sobre)
-* [Motivação](#motivação)
-* [Funcionalidades](#funcionalidades)
-* [Pré-requisitos](#pré-requisitos)
-* [Instalação](#instalação)
-* [Uso](#uso)
-* [Exemplo de saída](#exemplo-de-saída)
-* [Exportar resultados](#exportar-resultados)
-* [Design e decisões técnicas](#design-e-decisoes-técnicas)
-* [Contribuição](#contribuição)
-* [Inspiração](#inspiração)
+## Tecnologias
 
----
-## ⚠️ Aviso legal / Ética
-
-**Importante:** só escaneie hosts e redes **dos quais você é proprietário** ou onde você tem **autorização explícita**. Escanear sistemas alheios sem permissão é ilegal. 
-
----
-## 🔍 Sobre
-
-Pequeno projeto didático que combina:
-
-* programação de sockets em Python (stdlib);
-* paralelismo para I/O (threads);
-* interface web simples com Flask para iniciar scans e visualizar resultados;
-* exportação de resultados em JSON — tudo pensado para incluir no portfólio.
+- Python
+- Flask
+- Socket
+- ThreadPoolExecutor
 
 ---
 
-## 🎯 Motivação
+## Funcionalidades
 
-Objetivo: demonstrar entendimento prático de operações de rede (sockets), otimização I/O (threads) e construção de uma interface web para automação e visualização de dados.
-
----
-
-## ✅ Funcionalidades
-
-* Suporte a IPv4 e IPv6 (usa `socket.getaddrinfo`).
-* Escaneamento paralelo configurável (`threads`).
-* Tentativa de leitura de banner (quando o serviço responde).
-* Interface web (Flask) com formulário para host/portas/timeout/threads.
-* Exportar resultados em JSON para análise posterior.
-* Limites aplicados no front-end para evitar scans gigantes acidentais.
+- Escaneamento de portas TCP.
+- Suporte a IPv4 e IPv6.
+- Paralelismo utilizando `ThreadPoolExecutor`.
+- Captura de banners de serviços.
+- Interface web desenvolvida em Flask.
+- Exportação dos resultados em JSON.
+- Configuração de timeout e quantidade de threads.
+- Limites de segurança para evitar escaneamentos excessivos.
 
 ---
 
-## ⚙️ Pré-requisitos
+## Estrutura do Projeto
 
-* Python 3.8+
-* Dependências (instalar via pip):
-
-```bash
-pip install -r requirements.txt
-# requirements.txt contém:
-# flask
+```text
+.
+├── app.py
+├── scanner.py
+├── templates/
+├── static/
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-## 🛠️ Instalação (rápido)
+## Requisitos
 
-1. Clone o repositório:
+- Python 3.8+
+
+Instale as dependências:
 
 ```bash
-git clone <url-do-seu-repo>
+pip install -r requirements.txt
+```
+
+---
+
+## Como executar
+
+Clone o repositório:
+
+```bash
+git clone https://github.com/fireone-Ops/scanPort.git
+```
+
+Entre na pasta:
+
+```bash
 cd scanPort
 ```
 
-2. Crie e ative um virtualenv:
+Crie um ambiente virtual (opcional):
 
 ```bash
 python -m venv venv
-# Windows (PowerShell)
-venv\Scripts\Activate.ps1
-# Linux / macOS
+```
+
+Windows
+
+```bash
+venv\Scripts\activate
+```
+
+Linux/macOS
+
+```bash
 source venv/bin/activate
 ```
 
-3. Instale dependências:
+Instale as dependências:
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-## ▶️ Como rodar (local)
-
-1. Certifique-se de estar na pasta do projeto e com o venv ativado.
-2. Execute:
+Execute a aplicação:
 
 ```bash
 python app.py
 ```
 
-3. Abra no navegador:
+Acesse:
 
+```text
+http://127.0.0.1:5000
 ```
-http://127.0.0.1:5000/
-```
-
-> Se quiser acessar de outro dispositivo na mesma rede, rode `app.run(host="0.0.0.0", port=5000)` e acesse `http://<SEU_IP_LOCAL>:5000/`.
 
 ---
 
-## 🧭 Uso
+## Funcionamento
 
-* No campo **Host/IP**: informe `127.0.0.1`, `::1`, `192.168.x.x` ou domínio (ex.: `example.com`).
-* **Ports**: intervalo (`20-1024`) ou lista (`22,80,443`).
-* **Threads**: ajuste conforme sua máquina (50–300 recomendado).
-* **Timeout(s)**: tempo de espera por porta (0.4–2.0).
-* Clique em **Scan** e aguarde. Para scans maiores, use o modo em background (se implementado) para não bloquear o navegador.
+O usuário informa:
+
+- Host ou endereço IP.
+- Intervalo de portas ou lista personalizada.
+- Quantidade de threads.
+- Timeout.
+
+Após iniciar o escaneamento, o sistema verifica cada porta TCP e apresenta os resultados diretamente na interface web.
+
+Também é possível exportar o resultado em formato JSON.
 
 ---
 
-## 📎 Exemplo de saída (formato JSON)
+## Exemplo de saída
 
 ```json
 {
   "host": "192.168.0.1",
-  "scanned_ports": 100,
   "elapsed": 3.66,
   "results": [
-    {"port": 22, "open": false, "banner": "", "error": null},
-    {"port": 80, "open": true, "banner": "HTTP/1.1 200 OK ...", "error": null}
+    {
+      "port": 22,
+      "open": false,
+      "banner": ""
+    },
+    {
+      "port": 80,
+      "open": true,
+      "banner": "HTTP/1.1 200 OK"
+    }
   ]
 }
 ```
 
 ---
 
-## 💾 Exportar resultados
+## Arquitetura
 
-Use o link **Exportar JSON** na interface (ou acesse `/export.json`) para baixar o último resultado como `scan_results.json`.
+```text
+Usuário
+      │
+      ▼
+ Interface Flask
+      │
+      ▼
+ Scanner TCP
+      │
+      ▼
+ThreadPoolExecutor
+      │
+      ▼
+Sockets TCP
+      │
+      ▼
+Resultados
+      │
+      ▼
+ Dashboard / JSON
+```
 
 ---
 
-## 🧠 Design e decisões técnicas
+## Melhorias Futuras
 
-* **Por que threads?** Escanear portas é uma operação I/O-bound (espera de rede). Threads aumentam simultaneidade e reduzem tempo total sem complicar com async.
-* **`getaddrinfo`**: usado para suportar IPv4 e IPv6 de forma transparente.
-* **Limites**: por segurança e para evitar sobrecarregar a rede/host, o front-end e o servidor impõem limites (max portas / max threads).
-* **Não realiza UDP** (somente TCP) e não faz fingerprinting profundo — integração com `nmap` é sugestão futura.
+- Escaneamento UDP.
+- Fingerprinting de serviços.
+- Histórico de escaneamentos.
+- Exportação em CSV e PDF.
+- Dashboard com gráficos.
+- Autenticação de usuários.
+- Docker.
+- API REST.
+- Integração com Nmap.
 
 ---
 
-## 🤝 Contribuição
+## Aprendizados
 
-Contribuições são bem-vindas! Sugestões:
+Durante o desenvolvimento deste projeto foram aplicados conceitos como:
 
-1. Abra uma *issue* descrevendo a melhoria.
-2. Faça um fork, crie uma branch `feature/my-change` e submeta um PR.
+- Programação de redes.
+- Sockets TCP.
+- IPv4 e IPv6.
+- Concorrência com ThreadPoolExecutor.
+- Desenvolvimento Web com Flask.
+- Comunicação cliente-servidor.
+- Exportação de dados em JSON.
+- Estruturação de aplicações Python.
+
 ---
 
-## Contato
+## Aviso de Uso
 
-Davi Sousa
+Este projeto possui finalidade exclusivamente educacional.
+
+Não utilize o scanner em equipamentos, servidores ou redes sem autorização explícita do proprietário.
+
+---
+
+## Autor
+
 <p align="left">
-    <a href="https://www.linkedin.com/in/davisousavilela">
-        <img alt="LinkedIn" src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" />
-    </a>
-    <a href="https://github.com/fireone-Ops">
-        <img alt="GitHub" src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" />
-    </a>
+  <a href="https://github.com/fireone-Ops">
+    <img alt="Davi Sousa" src="https://img.shields.io/badge/Davi%20Sousa-181717?style=for-the-badge&logo=github&logoColor=white">
+  </a>
 </p>

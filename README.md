@@ -12,7 +12,8 @@ Scanner de portas TCP com interface web desenvolvido em Python e Flask. O projet
 - Flask
 - Socket
 - ThreadPoolExecutor
-
+- HTML
+- CSS
 ---
 
 ## Funcionalidades
